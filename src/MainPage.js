@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MainPage.css';
 import { FaUserNurse, FaUserMd, FaStethoscope } from 'react-icons/fa';
@@ -23,7 +23,7 @@ const MainPage = () => {
   };
 
   const handleRoleClick = (role) => {
-    navigate('/login', { state: { role } }); // Navigate to login page with role
+    navigate('/login', { state: { role } });
   };
 
   useEffect(() => {
@@ -38,8 +38,11 @@ const MainPage = () => {
     <div className="main-page">
       <header className="taskbar">
         <div className="logo-container">
-          <img src={logo} alt="Jaypee Hospital Logo" className="logo" />
-          <h1 className="hospital-name">Jaypee Hospital Portal</h1>
+          <img src={logo} alt="HealthNest Logo" className="logo" />
+          <div className="title-group">
+            <h1 className="hospital-name">HealthNest</h1>
+            <p className="tagline">One Nest for Every Nurse and Doctor</p>
+          </div>
         </div>
         <nav className="nav-bar">
           <ul className="nav-list">
@@ -55,13 +58,21 @@ const MainPage = () => {
           {activeSection === 'about' && (
             <div className="section-content">
               <h2>About Us</h2>
-              <p>Welcome to Jaypee Hospital! We provide top-quality care with advanced medical technology and compassionate service.</p>
+              <p>
+                HealthNest is a secure, collaborative digital workspace designed for modern healthcare teams.
+                Built to streamline clinical workflows, HealthNest empowers nurses and doctors to document, review,
+                and manage patient information with ease — all in one place. Our advanced Surgical Site Infection (SSI)
+                Detection system assists in early identification of post-surgical complications.
+              </p>
             </div>
           )}
           {activeSection === 'contact' && (
             <div className="section-content">
               <h2>Contact Us</h2>
-              <p>Phone: 1800 102 9103<br />Email: contact@jaypeehospital.com</p>
+              <p>
+                Phone: 1800 102 9103<br />
+                Email: contact@healthnest.com
+              </p>
             </div>
           )}
           {activeSection === 'locations' && (
@@ -82,7 +93,6 @@ const MainPage = () => {
       </div>
 
       <div className="role-selection-container">
-        {/* <h2 className="choose-role-heading">Choose Your Role</h2> */}
         <div className="role-cards-container">
           <div className="role-card" onClick={() => handleRoleClick('nurse')}>
             <FaUserNurse className="role-icon" />

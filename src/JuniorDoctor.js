@@ -26,7 +26,7 @@ const JuniorDoctor = () => {
     { path: '/antibiotic-form', label: 'Antibiotic Details' },
     { path: '/microbiology-form', label: 'Microbiology Details' },
     { path: '/event-details-form', label: 'Event Details' },
-    { path: '/ssi-evaluation', label: 'SSI Evaluation' },
+    { path: '/SSI-evaluation-form', label: 'SSI Evaluation' },
   ];
 
   return (
@@ -72,6 +72,16 @@ const JuniorDoctor = () => {
                     {option.label}
                   </button>
                 ))}
+                 <button
+                  className="ssi-prediction-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/ssi-prediction/${patient.id}`);
+                  }}
+                >
+                  SSI Prediction
+                </button>
+              
               </div>
             )}
           </div>
@@ -81,4 +91,4 @@ const JuniorDoctor = () => {
   );
 };
 
-export default JuniorDoctor;
+export default JuniorDoctor;  

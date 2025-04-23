@@ -98,6 +98,9 @@ function MicrobiologyForm() {
     // Save the PDF
     doc.save('microbiology_form.pdf');
   };
+  const handleDownloadExcel = () => {
+    alert("Downloaded as Excel .");
+  };
 
   return (
     <div style={styles.container}>
@@ -165,6 +168,22 @@ function MicrobiologyForm() {
         <button type="submit" style={{ marginTop: '20px', padding: '10px 15px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
           Submit
         </button>
+        <button 
+        type="button" 
+        onClick={handleDownloadExcel} 
+        style={{
+          padding: '10px 20px',
+          backgroundColor: '#28a745',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          marginTop: '20px',
+          marginLeft: '10px',
+        }}
+      >
+        Download as Excel
+      </button>
         <button type="button" onClick={handleDownloadPDF} style={styles.downloadButton}>
         Download as PDF
       </button>
@@ -229,7 +248,7 @@ const styles = {
   },
   downloadButton: {
     padding: '10px 20px',
-    backgroundColor: '#28a745',
+    backgroundColor: 'red',
     color: 'white',
     border: 'none',
     borderRadius: '4px',

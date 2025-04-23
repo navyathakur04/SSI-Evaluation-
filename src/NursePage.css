@@ -91,6 +91,25 @@
   transform: translateY(0);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15); /* Lighter shadow on click */
 }
+.ssi-prediction-button {
+  background-color: darkred !important;
+  color: white !important;
+  font-size: 20px !important;
+  padding: 15px 30px !important;
+  border: none !important;
+  border-radius: 25px !important; /* Unique shape */
+  cursor: pointer !important;
+  margin-top: 15px !important;
+  font-weight: bold !important;
+  transition: background-color 0.3s ease, transform 0.2s ease !important;
+}
+
+.ssi-prediction-button:hover {
+  background-color: coral !important;
+  transform: scale(1.05) !important;
+}
+
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

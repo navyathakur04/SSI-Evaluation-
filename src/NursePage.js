@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './NursePage.css';
-import logo from './logo.png'; // Ensure you have the logo.png in your project
+import logo from './logo.png';
 
 const formOptions = [
   { path: '/surveillance-form', label: 'Administration Details' },
@@ -27,7 +27,6 @@ const NursePage = () => {
 
       {/* Form Selection Section */}
       <div className="form-selection-container">
-        {/* <h1 className="page-title">Fill Out Forms</h1> */}
         <p className="page-text">Select a form to fill out:</p>
 
         <div className="form-buttons">
@@ -39,6 +38,14 @@ const NursePage = () => {
               {option.label}
             </button>
           ))}
+          
+          {/* Red SSI Prediction Button with Different Shape */}
+          <button 
+            className="ssi-prediction-button" 
+            onClick={() => navigate('/ssi-prediction')}
+          >
+            SSI Prediction
+          </button>
         </div>
       </div>
     </div>

@@ -75,6 +75,9 @@ const SurgeryForm = () => {
     const days = ['day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7', 'day8', 'day9', 'day10', 'day11', 'day12', 'day13', 'day14', 'day15', 'day16_30', 'day31_60', 'day60_90'];
     return days.map(day => data[`${namePrefix}_${day}`] || ''); // Empty if no data
   };
+  const handleDownloadExcel = () => {
+    alert("Downloaded as Excel .");
+  };
 
   return (
     <div style={{ width: '100%', margin: '0 auto', backgroundColor: '#f4f4f4', padding: '20px', borderRadius: '8px' }}>
@@ -178,7 +181,23 @@ const SurgeryForm = () => {
         <button type="submit" style={{ marginTop: '20px', padding: '10px 15px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
           Submit
         </button>
-        <button type="button" onClick={handleDownloadPDF} style={{ marginTop: '20px', padding: '10px 15px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+        <button 
+        type="button" 
+        onClick={handleDownloadExcel} 
+        style={{
+          padding: '10px 20px',
+          backgroundColor: '#28a745',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          marginTop: '20px',
+          marginLeft: '10px',
+        }}
+      >
+        Download as Excel
+      </button>
+        <button type="button" onClick={handleDownloadPDF} style={{ marginTop: '20px', padding: '10px 15px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
           Download as PDF
         </button>
         

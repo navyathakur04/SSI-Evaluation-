@@ -101,7 +101,7 @@
 .patient-card p {
   font-size: 1.1em;
   color: #777;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 /* Form Buttons Container in Expanded Card */
@@ -109,7 +109,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 15px;
+  margin-top: 13px;
   align-items: center;
 }
 
@@ -130,4 +130,29 @@
 .form-buttons button:hover {
   background-color: #303f9f;
   transform: translateY(-2px);
+}
+.ssi-prediction-button {
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 90%; /* Ensure it doesn’t exceed the card width */
+  display: block;
+  margin: 10px auto 0 auto; /* Space above, centered */
+}
+.patient-card.expanded {
+  max-height: fit-content; /* Allow dynamic height based on content */
+  padding-bottom: 20px; /* Extra space at the bottom */
+}
+
+
+
+.ssi-prediction-button:hover {
+  background-color: darkred;
+  transform: scale(1.05);
 }

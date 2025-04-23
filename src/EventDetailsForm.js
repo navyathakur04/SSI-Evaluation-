@@ -8,8 +8,8 @@ const EventDetailsForm = () => {
       sis: false,
       dip: false,
       dis: false,
-      organ_space: false, // Change to a boolean
-      organ_space_text: '', // Add separate state for organ/space text
+      organ_space: false, 
+      organ_space_text: '', 
     },
     detected: {
       during_admission: false,
@@ -17,8 +17,8 @@ const EventDetailsForm = () => {
       readmission_facility: false,
     },
     sample_type: '',
-    sample_collection_site: '', // Added for site of sample collection
-    secondary_bsi_contribution: '', // Field for Secondary BSI contribution
+    sample_collection_site: '', 
+    secondary_bsi_contribution: '', 
   });
 
   const handle_event_change = (e) => {
@@ -98,8 +98,9 @@ const EventDetailsForm = () => {
 
     doc.text('Secondary BSI Contribution:', 10, 170);
     doc.text(event_details_form.secondary_bsi_contribution || 'N/A', 10, 180);
-
-    doc.save('event_details_form.pdf');
+  };
+  const handleDownloadExcel = () => {
+    alert("Downloaded as Excel .");
   };
 
   return (
@@ -275,6 +276,22 @@ const EventDetailsForm = () => {
       <button type="submit" style={{ marginTop: '20px', padding: '10px 15px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
         Submit
       </button>
+      <button 
+        type="button" 
+        onClick={handleDownloadExcel} 
+        style={{
+          padding: '10px 20px',
+          backgroundColor: '#28a745',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          marginTop: '20px',
+          marginLeft: '10px',
+        }}
+      >
+        Download as Excel
+      </button>
       <button type="button" onClick={handleDownloadPDF} style={styles.downloadButton}>
         Download as PDF
       </button>
@@ -325,7 +342,7 @@ const styles = {
   },
   downloadButton: {
     padding: '10px 20px',
-    backgroundColor: '#28a745',
+    backgroundColor: 'red',
     color: 'white',
     border: 'none',
     borderRadius: '4px',

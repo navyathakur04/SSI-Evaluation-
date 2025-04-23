@@ -61,17 +61,81 @@ const LoginPage = ({ setIsAuthenticated }) => {
     }
   };
 
-  const handleSendOtp = () => {
-    alert('OTP has been sent!');
-    setShowOtpBox(true);
+  const handleSendOtp = async () => {
+    if (!phone_number) {
+      alert('Please enter your phone number.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8000/nurse/otp/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone_number: parseInt(phone_number), action: 'generate' }),
+      });
+      const data = await response.json();
+
+      if (data.status === 'SUCCESS') {
+        alert('OTP has been sent successfully!');
+        setShowOtpBox(true);
+      } else {
+        alert(`Failed to send OTP: ${data.msg || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      alert('Something went wrong while sending OTP.');
+    }
   };
 
-  const handleResendOtp = () => {
-    alert('OTP has been resent!');
+  const handleVerifyOtp = async () => {
+    if (!phone_number || !otp) {
+      alert('Please enter both phone number and OTP.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8000/nurse/otp/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone_number: parseInt(phone_number), action: 'verify', otp: parseInt(otp) }),
+      });
+      const data = await response.json();
+
+      if (data.status === 'SUCCESS') {
+        alert('OTP verified successfully!');
+        handleLogin();
+      } else {
+        alert(`OTP Verification Failed: ${data.msg || 'Invalid OTP'}`);
+      }
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
+      alert('Something went wrong during OTP verification.');
+    }
   };
 
-  const handleVerifyOtp = () => {
-    alert('OTP Verified!');
+  const handleResendOtp = async () => {
+    if (!phone_number) {
+      alert('Please enter your phone number.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8000/nurse/otp/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone_number: parseInt(phone_number), action: 'resend' }),
+      });
+      const data = await response.json();
+
+      if (data.status === 'SUCCESS') {
+        alert('OTP has been resent successfully!');
+      } else {
+        alert(`Failed to resend OTP: ${data.msg || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error resending OTP:', error);
+      alert('Something went wrong while resending OTP.');
+    }
   };
 
   return (
@@ -83,7 +147,7 @@ const LoginPage = ({ setIsAuthenticated }) => {
         <img src={logo} alt="Logo" className="logo" />
         <div className="toggle-buttons">
           <button onClick={() => setIsLogin(true)} className={isLogin ? 'active' : ''}>
-            Login 
+            Login
           </button>
           <button onClick={() => setIsLogin(false)} className={!isLogin ? 'active' : ''}>
             Register
@@ -91,7 +155,6 @@ const LoginPage = ({ setIsAuthenticated }) => {
         </div>
         {isLogin ? (
           <div className="login-form">
-            {/* <h2>Login</h2> */}
             <input
               type="text"
               placeholder="Phone Number"
@@ -114,11 +177,9 @@ const LoginPage = ({ setIsAuthenticated }) => {
                 </div>
               </>
             )}
-            <button onClick={handleLogin}>Login</button>
           </div>
         ) : (
           <div className="register-form">
-            {/* <h2>Register</h2> */}
             <input
               type="text"
               placeholder="Name"
@@ -160,7 +221,6 @@ const LoginPage = ({ setIsAuthenticated }) => {
             <label>Date of Birth :</label>
             <input
               type="date"
-             
               value={newUserDetails.date_of_birth}
               onChange={(e) => setNewUserDetails({ ...newUserDetails, date_of_birth: e.target.value })}
             />

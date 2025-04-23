@@ -30,7 +30,6 @@ const SeniorDoctorPage = () => {
   ];
 
   return (
-    
     <div className="senior-doctor-page">
       {/* Taskbar Section */}
       <div className="taskbar">
@@ -40,8 +39,7 @@ const SeniorDoctorPage = () => {
         </div>
       </div>
 
-      {/* Main Content
-      <h1 className="page-title">Welcome to Senior Doctor Portal</h1> */}
+      {/* Page Introduction */}
       <p className="intro-text">Click on a patient to open their forms:</p>
 
       {/* Patient Cards */}
@@ -73,6 +71,17 @@ const SeniorDoctorPage = () => {
                     {option.label}
                   </button>
                 ))}
+
+                {/* SSI Prediction Button */}
+                <button
+                  className="ssi-prediction-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/ssi-prediction/${patient.id}`);
+                  }}
+                >
+                  SSI Prediction
+                </button>
               </div>
             )}
           </div>

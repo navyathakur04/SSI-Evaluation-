@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
+
 const SurveillanceForm = () => {
   const [formData, setFormData] = useState({
     patientName: '',
@@ -23,43 +24,61 @@ const SurveillanceForm = () => {
     durationPAP: '',
     ssiEventOccurred: '',
     dateOfEvent: '',
-    // const BACKEND_URL = 'http://localhost:8000/nurse/patient_administration_details/add/';
-
+    diabeticPatient: '',
+    patientOnSteroids: '',
+    alcoholConsumption: '',
+    tobaccoConsumption: '',
+    Weight: '',
+    Height: '', // New field for height (cm)
+    BMI: '',   // New field for calculated BMI
+    lengthOfSurgery: '',
   });
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
+    const newFormData = {
       ...formData,
       [name]: type === 'checkbox' ? checked : value,
-    });
+    };
+
+    // Calculate BMI if Weight or Height changes
+    if (name === 'Weight' || name === 'Height') {
+      const weight = parseFloat(newFormData.Weight) || 0;
+      const height = parseFloat(newFormData.Height) || 0;
+      if (weight > 0 && height > 0) {
+        const heightInMeters = height / 100; // Convert cm to meters
+        const bmi = (weight / (heightInMeters * heightInMeters)).toFixed(2);
+        newFormData.BMI = bmi;
+      } else {
+        newFormData.BMI = '';
+      }
+    }
+
+    setFormData(newFormData);
   };
 
-  //  const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   console.log(formData);
-  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch('http://localhost:8000/nurse/patient_administration_details/add/', {
-        method: 'POST', 
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
-    
+
       if (!response.ok) {
         throw new Error('Failed to submit the form');
       }
-  
+
       const responseData = await response.json();
       console.log('Form submitted successfully:', responseData);
     } catch (error) {
       console.error('Error submitting form:', error);
     }
   };
+
   const generatePDF = () => {
     const doc = new jsPDF();
 
@@ -89,6 +108,14 @@ const SurveillanceForm = () => {
       ['Duration of PAP', formData.durationPAP],
       ['SSI Event Occurred', formData.ssiEventOccurred],
       ['Date of Event', formData.dateOfEvent],
+      ['Diabetes', formData.diabeticPatient],
+      ['Patient on Steroids', formData.patientOnSteroids],
+      ['Alcohol Consumption', formData.alcoholConsumption],
+      ['Tobacco Consumption', formData.tobaccoConsumption],
+      ['Patient Weight (kg)', formData.Weight], // Fixed from Weighteight
+      ['Patient Height (cm)', formData.Height], // New field
+      ['BMI', formData.BMI], // New field
+      ['Length of Surgery (hours)', formData.lengthOfSurgery],
     ];
 
     doc.autoTable({
@@ -99,7 +126,11 @@ const SurveillanceForm = () => {
 
     doc.save('SurveillanceForm.pdf');
   };
-  
+
+  const handleDownloadExcel = () => {
+    alert('Downloaded as Excel.');
+  };
+
   const procedures = [
     'Abdominal aortic aneurysm repair', 'Limb amputation', 'Appendix surgery', 'Shunt for dialysis',
     'Bile duct, liver, or pancreas surgery', 'Carotid endarterectomy', 'Gallbladder surgery', 'Colon surgery',
@@ -113,20 +144,20 @@ const SurveillanceForm = () => {
 
   const theatres = [
     'OT NO. 1', 'OT NO. 2', 'OT NO. 3', 'OT NO. 4', 'OT NO. 5', 'OT NO. 6', 'OT NO. 7', 'OT NO. 8',
-    'OT NO. 9', 'OT NO. 10', 'OT NO. 11', 'OT NO. 12', 'ROBOTIC OT', 'C-SEC OT', 'MINOR OT', 
+    'OT NO. 9', 'OT NO. 10', 'OT NO. 11', 'OT NO. 12', 'ROBOTIC OT', 'C-SEC OT', 'MINOR OT',
     'COSMETOLOGY OT', 'Others'
   ];
 
   const departments = [
-   'Cardiothoracic Surgery', 'Internal Medicine', 'Anesthesia', 'Cardiology', 
+    'Cardiothoracic Surgery', 'Internal Medicine', 'Anesthesia', 'Cardiology',
     'Hemato-Oncology & Bone Marrow Transplant', 'Liver Transplant & Surgical Gastroenterology',
-    'Oncology', 'GI & Hepato-Pancreatico-Biliary Surgery', 'Critical Care', 
-    'Pulmonary Medicine & Critical Care', 'Radiodiagnosis & Imaging', 'Nephrology', 
-    'Urology & Renal Transplant', 'Plastic & Aesthetic Surgery', 'Gastroenterology', 
+    'Oncology', 'GI & Hepato-Pancreatico-Biliary Surgery', 'Critical Care',
+    'Pulmonary Medicine & Critical Care', 'Radiodiagnosis & Imaging', 'Nephrology',
+    'Urology & Renal Transplant', 'Plastic & Aesthetic Surgery', 'Gastroenterology',
     'Orthopedics & Joint Replacement', 'NeuroSciences', 'Pediatric', 'Laboratory Medicine',
     'Endocrinology', 'General & Minimally Access Surgery', 'Obstetrics & Gynaecology',
     'Dental Department', 'Nuclear Medicine', 'Dermatology', 'Rheumatology', 'IVF & Reproductive Medicine',
-    'Orthopedic Spine', 'Onco Surgery', 'Medical Services', 'Ophthalmology', 'ENT', 
+    'Orthopedic Spine', 'Onco Surgery', 'Medical Services', 'Ophthalmology', 'ENT',
     'Respiratory, Critical Care & Sleep Medicine', 'Behavioral Sciences'
   ];
 
@@ -150,14 +181,14 @@ const SurveillanceForm = () => {
     'Dr. Naveen Prakash Verma', 'Dr. Bhupender Singh', 'Dr. Aditya Bhatla', 'Dr. Shovna Veshnavi',
     'Dr. Purnima Sahni Sood', 'Dr. (Col) Subodh Kumar', 'Dr. Shweta Goswami', 'Dr. Sunita Maheshwari',
     'Dr. Atul K Maheshwari', 'Dr. Sharad Dev', 'Dr. Vikram Singh Solanki', 'Dr. Radha Agartaniya',
-    'Dr. Mithee Bhanot', 'Dr. Vibha Bansal', 'Dr. Rashmi Vyas', 'Dr. Richa Thukral', 
+    'Dr. Mithee Bhanot', 'Dr. Vibha Bansal', 'Dr. Rashmi Vyas', 'Dr. Richa Thukral',
     'Dr. Nischal Anand', 'Dr. Abhishek', 'Dr. Vikram Bhardwaj', 'Dr. Devashish Sharma',
     'Dr. Aastha Gupta', 'Dr. Dipali Taneja', 'Dr. Priyadarshi Jitendra Kumar',
     'Dr. Priyanka Srivastava', 'Dr. Manasi Mehra', 'Dr. Anita Singla', 'Dr. Abhishek Kumar',
     'Dr. Parul Singhal', 'Dr. Prerna Sharma', 'Dr. Shweta Gupta', 'Dr. Kumari Madhulika',
     'Dr. Jyoti Jain', 'Dr. Sanjay Sharma', 'Dr. Sandeep Yadav', 'Dr. Sonalika Singh Chauhan',
     'Dr. Meenakshi Maurya', 'Dr. Manisha Ranjan', 'Dr. Pankaj Kumar', 'Dr. Rohit Kumar Pandey',
-    'Dr. Deepshikha', 'Dr. Meenakshi', 'Dr. Arti Yadav', 'Dr. Anjali Gupta', 
+    'Dr. Deepshikha', 'Dr. Meenakshi', 'Dr. Arti Yadav', 'Dr. Anjali Gupta',
     'Dr. Rajesh Prasad Gupta', 'Dr. Abhay Kumar Singh', 'Dr. Raman Mehta', 'Dr. Abhishek Dave',
     'Dr. Preeti Deolwari', 'Dr. Abhijeet Kotabagi', 'Dr. Chandrika', 'Dr. Parineeta Maria'
   ];
@@ -166,7 +197,6 @@ const SurveillanceForm = () => {
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Surgical Site Infection Surveillance Form</h2>
       <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-        
         {/* Row 1 */}
         <label style={{ gridColumn: 'span 1' }}>Patient Name:</label>
         <input type="text" name="patientName" value={formData.patientName} onChange={handleChange} style={{ gridColumn: 'span 1' }} />
@@ -271,51 +301,116 @@ const SurveillanceForm = () => {
         <select name="durationPAP" value={formData.durationPAP} onChange={handleChange} style={{ gridColumn: 'span 1' }}>
           <option value="">Select Duration</option>
           <option value="within 30 mins">within 30 mins</option>
-          <option value="within 60 mins"> within 60 mins</option>
+          <option value="within 60 mins">within 60 mins</option>
           <option value="within 90 mins">within 90 mins</option>
-          <option value=" more than 90 mins">more than 90 mins</option>
+          <option value="more than 90 mins">more than 90 mins</option>
         </select>
 
+        {/* Diabetes */}
+        <label style={{ gridColumn: 'span 1' }}>Diabetes:</label>
+        <div style={{ gridColumn: 'span 1' }}>
+          <label><input type="radio" name="diabeticPatient" value="High" checked={formData.diabeticPatient === 'High'} onChange={handleChange} /> High</label>
+          <label><input type="radio" name="diabeticPatient" value="Low" checked={formData.diabeticPatient === 'Low'} onChange={handleChange} /> Low</label>
+          <label><input type="radio" name="diabeticPatient" value="No" checked={formData.diabeticPatient === 'No'} onChange={handleChange} /> No</label>
+        </div>
+
+        {/* Patient on Steroids */}
+        <label style={{ gridColumn: 'span 1' }}>Patient on Steroids:</label>
+        <div style={{ gridColumn: 'span 1' }}>
+          <label><input type="radio" name="patientOnSteroids" value="Yes" checked={formData.patientOnSteroids === 'Yes'} onChange={handleChange} /> Yes</label>
+          <label><input type="radio" name="patientOnSteroids" value="No" checked={formData.patientOnSteroids === 'No'} onChange={handleChange} /> No</label>
+        </div>
+
+        {/* Alcohol Consumption */}
+        <label style={{ gridColumn: 'span 1' }}>Alcohol Consumption:</label>
+        <div style={{ gridColumn: 'span 1' }}>
+          <label><input type="radio" name="alcoholConsumption" value="Yes" checked={formData.alcoholConsumption === 'Yes'} onChange={handleChange} /> Yes</label>
+          <label><input type="radio" name="alcoholConsumption" value="No" checked={formData.alcoholConsumption === 'No'} onChange={handleChange} /> No</label>
+        </div>
+
+        {/* Tobacco Consumption */}
+        <label style={{ gridColumn: 'span 1' }}>Tobacco Consumption:</label>
+        <div style={{ gridColumn: 'span 1' }}>
+          <label><input type="radio" name="tobaccoConsumption" value="Yes" checked={formData.tobaccoConsumption === 'Yes'} onChange={handleChange} /> Yes</label>
+          <label><input type="radio" name="tobaccoConsumption" value="No" checked={formData.tobaccoConsumption === 'No'} onChange={handleChange} /> No</label>
+        </div>
+
+        {/* Patient Weight */}
+        <label style={{ gridColumn: 'span 1' }}>Patient Weight (kg):</label>
+        <input type="number" name="Weight" value={formData.Weight} onChange={handleChange} style={{ gridColumn: 'span 1' }} />
+
+        {/* Patient Height */}
+        <label style={{ gridColumn: 'span 1' }}>Patient Height (cm):</label>
+        <input type="number" name="Height" value={formData.Height} onChange={handleChange} style={{ gridColumn: 'span 1' }} />
+
+        {/* BMI (Read-only) */}
+        <label style={{ gridColumn: 'span 1' }}>BMI:</label>
+        <input type="text" name="BMI" value={formData.BMI} readOnly style={{ gridColumn: 'span 1', backgroundColor: '#e0e0e0' }} />
+
+        {/* Length of Surgery */}
+        <label style={{ gridColumn: 'span 1' }}>Length of Surgery (hours):</label>
+        <input type="number" name="lengthOfSurgery" value={formData.lengthOfSurgery} onChange={handleChange} style={{ gridColumn: 'span 1' }} />
+
+        {/* SSI Event Occurred */}
         <label style={{ gridColumn: 'span 1' }}>SSI Event Occurred:</label>
         <div style={{ gridColumn: 'span 1' }}>
           <label><input type="radio" name="ssiEventOccurred" value="Yes" checked={formData.ssiEventOccurred === 'Yes'} onChange={handleChange} /> Yes</label>
           <label><input type="radio" name="ssiEventOccurred" value="No" checked={formData.ssiEventOccurred === 'No'} onChange={handleChange} /> No</label>
         </div>
-        <label style={{ gridColumn: 'span 1' }}>If Yes, Date of Event:</label>
-{formData.ssiEventOccurred === 'Yes' && (
-  <input
-    type="date"
-    name="dateOfEvent"
-    value={formData.dateOfEvent || ''} 
-    onChange={handleChange}
-    style={{ gridColumn: 'span 1' }}
-  />
-)}
+
+        {/* Date of Event */}
+        {formData.ssiEventOccurred === 'Yes' && (
+          <>
+            <label style={{ gridColumn: 'span 1' }}>If Yes, Date of Event:</label>
+            <input
+              type="date"
+              name="dateOfEvent"
+              value={formData.dateOfEvent || ''}
+              onChange={handleChange}
+              style={{ gridColumn: 'span 1' }}
+            />
+          </>
+        )}
+
         <div style={{ gridColumn: 'span 2', textAlign: 'center' }}>
-        <button type="submit" style={{ marginTop: '20px', padding: '10px 15px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-          Submit
-        </button>
-        <button
-        type="button"
-        onClick={generatePDF}
-        style={{
-          padding: '10px 20px',
-    backgroundColor: '#28a745',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    marginTop: '20px',
-    marginLeft: '10px',
-        }}
-      >
-        Download as PDF
-      </button>
+          <button type="submit" style={{ marginTop: '20px', padding: '10px 15px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+            Submit
+          </button>
+          <button
+            type="button"
+            onClick={handleDownloadExcel}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#28a745',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              marginTop: '20px',
+              marginLeft: '10px',
+            }}
+          >
+            Download as Excel
+          </button>
+          <button
+            type="button"
+            onClick={generatePDF}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: 'red',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              marginTop: '20px',
+              marginLeft: '10px',
+            }}
+          >
+            Download as PDF
+          </button>
         </div>
       </form>
-      </div>
-       
-   
+    </div>
   );
 };
 
